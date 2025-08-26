@@ -31,7 +31,7 @@ export default function RootLayout({
         <Providers>
           <Header />
 
-          <main className="flex-1 container mx-auto px-4 py-8  w-full">
+          <main className="flex-1 container mx-auto px-4 py-8 w-full h-screen">
             {children}
           </main>
 

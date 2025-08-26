@@ -115,7 +115,7 @@ const MinerGame = () => {
   };
 
   return (
-    <GeneralContainer customStyle="w-full h-full flex items-center justify-center p-4">
+    <GeneralContainer customStyle="w-full flex items-center justify-center p-4">
       <div className="w-full max-w-5xl p-6 bg-surface rounded-2xl shadow-2xl border-2 border-primary flex flex-col gap-6">
         <GameHeader credits={user.creditsAvaliable} gameName="💎 Miner" />
 
