@@ -37,17 +37,6 @@ const MinerGame = () => {
     }
   }, [user]);
 
-  if (!user) {
-    return (
-      <GeneralContainer customStyle="w-full h-full flex items-center justify-center">
-        <div className="text-center text-lg font-bold text-red-500">
-          ⚠️ Você precisa estar logado para jogar.
-        </div>
-      </GeneralContainer>
-    );
-  }
-
-
   const generateGrid = useCallback((): Cell[] => {
     const { bombs, diamonds } = difficulties[difficulty];
     const totalCells = GRID_ROWS * GRID_COLS;
@@ -69,6 +58,17 @@ const MinerGame = () => {
       revealed: false,
     }));
   }, [difficulty]);
+
+  if (!user) {
+    return (
+      <GeneralContainer customStyle="w-full h-full flex items-center justify-center">
+        <div className="text-center text-lg font-bold text-red-500">
+          ⚠️ Você precisa estar logado para jogar.
+        </div>
+      </GeneralContainer>
+    );
+  }
+
 
   const startGame = () => {
     if (user.creditsAvaliable < cost || cost === 0) {
