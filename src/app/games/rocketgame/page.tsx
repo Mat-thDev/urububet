@@ -22,7 +22,7 @@ const RocketGame = () => {
 
   useEffect(() => {
     if (user) {
-      setBet(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 10);
+      setBet(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 0);
     }
   }, [user]);
 

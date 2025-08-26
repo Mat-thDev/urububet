@@ -49,7 +49,7 @@ const SlotMachine = () => {
 
   useEffect(() => {
     if (user) {
-      setCost(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 10);
+      setCost(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 0);
     }
   }, [user]);
 
@@ -206,7 +206,7 @@ const SlotMachine = () => {
             </div>
             <button
               onClick={() => changeCost(cost + 0.5)}
-              disabled={gameStarted || cost >= user.creditsAvaliable || cost === 0}
+              disabled={gameStarted || cost >= user.creditsAvaliable}
               className="p-2 sm:p-3 bg-accent rounded-lg hover:bg-rose-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               aria-label="Aumentar aposta"
             >
