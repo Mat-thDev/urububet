@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useUserData } from "@/hooks/useUserData";
 import GeneralContainer from "@/components/General/GeneralContainer";
@@ -16,11 +16,14 @@ const symbolsData = [
   { icon: "💲", multiply: 50 },
 ];
 
-const getRandomSymbol = () => symbolsData[Math.floor(Math.random() * symbolsData.length)].icon;
+const getRandomSymbol = () =>
+  symbolsData[Math.floor(Math.random() * symbolsData.length)].icon;
 
 const generateSpinResults = (isWin: boolean) => {
   const forcedSymbol = isWin ? getRandomSymbol() : null;
-  return Array(3).fill(null).map(() => forcedSymbol ?? getRandomSymbol());
+  return Array(3)
+    .fill(null)
+    .map(() => forcedSymbol ?? getRandomSymbol());
 };
 
 const calculateWin = (symbols: string[], cost: number): number => {
@@ -37,22 +40,35 @@ const shuffleArray = (array: number[]): number[] => {
 
 const SlotMachine = () => {
   const { user, addCredits, removeCredits, updateWinGameStats, updateLossGameStats } = useUserData();
-  if (!user) return null;
 
   const [gameStarted, setGameStarted] = useState(false);
-  const [cost, setCost] = useState(user.creditsAvaliable > 100 ? (user.creditsAvaliable/100 * 10) : 10);
+  const [cost, setCost] = useState(10);
   const [reels, setReels] = useState<string[]>(["❔", "❔", "❔"]);
   const [spinning, setSpinning] = useState([false, false, false]);
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    if (user) {
+      setCost(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 10);
+    }
+  }, [user]);
+
   const multiplier = useMemo(() => Math.max(1, cost / 100), [cost]);
 
-  const changeCost = useCallback((value: number) => {
-    const newValue = Math.min(user.creditsAvaliable, Math.max(0.25, Number.isNaN(value) ? 0.25 : value));
-    setCost(Math.round(newValue * 100) / 100); // Round to 2 decimal places
-  }, [user.creditsAvaliable]);
+  const changeCost = useCallback(
+    (value: number) => {
+      if (!user) return;
+      const newValue = Math.min(
+        user.creditsAvaliable,
+        Math.max(0.25, Number.isNaN(value) ? 0.25 : value)
+      );
+      setCost(Math.round(newValue * 100) / 100);
+    },
+    [user]
+  );
 
   const spin = useCallback(() => {
+    if (!user) return;
     if (user.creditsAvaliable < cost || cost === 0) {
       setMessage("💸 Saldo insuficiente! Deposite mais para jogar.");
       return;
@@ -89,30 +105,50 @@ const SlotMachine = () => {
             if (winAmount > 0) {
               addCredits(winAmount);
               setMessage(`🎉 Parabéns! Você ganhou R$ ${winAmount.toFixed(2)}!`);
-              updateWinGameStats("SlotMachine", winAmount)
+              updateWinGameStats("SlotMachine", winAmount);
             }
             setGameStarted(false);
           }, 350);
         }
       }, spinTimes[i]);
     });
-  }, [cost, user.creditsAvaliable, addCredits, removeCredits]);
+  }, [cost, user, addCredits, removeCredits, updateWinGameStats, updateLossGameStats]);
+
+  if (!user) {
+    return (
+      <GeneralContainer customStyle="w-full h-full flex items-center justify-center">
+        <div className="text-lg font-bold text-red-500">
+          ⚠️ Você precisa estar logado para jogar.
+        </div>
+      </GeneralContainer>
+    );
+  }
 
   const ReelColumn = ({ symbol, isSpinning }: { symbol: string; isSpinning: boolean }) => {
-    const reelSymbols = [...symbolsData.map((s) => s.icon), ...symbolsData.map((s) => s.icon)];
+    const reelSymbols = [
+      ...symbolsData.map((s) => s.icon),
+      ...symbolsData.map((s) => s.icon),
+    ];
     return (
       <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 overflow-hidden bg-gradient-to-br from-accent to-primary rounded-lg border-4 border-accent shadow-[inset_0_0_15px_rgba(0,0,0,0.5)] flex items-center justify-center">
         <motion.div
           animate={isSpinning ? { y: ["0%", "-100%"] } : { y: 0 }}
-          transition={isSpinning ? { repeat: Infinity, duration: 0.3, ease: "linear" } : { duration: 0.5, ease: "easeOut" }}
+          transition={
+            isSpinning
+              ? { repeat: Infinity, duration: 0.3, ease: "linear" }
+              : { duration: 0.5, ease: "easeOut" }
+          }
           className="flex flex-col"
         >
           {isSpinning
             ? reelSymbols.map((s, i) => (
-              <div key={i} className="h-24 sm:h-28 md:h-32 flex items-center justify-center text-4xl sm:text-5xl md:text-6xl">
-                {s}
-              </div>
-            ))
+                <div
+                  key={i}
+                  className="h-24 sm:h-28 md:h-32 flex items-center justify-center text-4xl sm:text-5xl md:text-6xl"
+                >
+                  {s}
+                </div>
+              ))
             : (
               <div className="h-24 sm:h-28 md:h-32 flex items-center justify-center text-4xl sm:text-5xl md:text-6xl">
                 {symbol}

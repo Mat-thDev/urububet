@@ -12,11 +12,9 @@ import {
   XAxis,
   YAxis,
   Legend,
-  LineChart,
-  Line,
 } from "recharts";
 import { motion } from "framer-motion";
-import { Trophy, Gamepad2, TrendingUp, DollarSign, Coins } from "lucide-react";
+import { Trophy, Gamepad2 } from "lucide-react";
 import { useUserData } from "@/hooks/useUserData";
 import Card from "@/components/General/Card";
 import CardContent from "@/components/General/CardContent";

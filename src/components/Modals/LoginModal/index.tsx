@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X } from "lucide-react";
 import { UserData, UserStats } from "@/types";
 import { useUserData } from "@/hooks/useUserData";
 
@@ -55,14 +54,6 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
           >
-            {/* Botão fechar */}
-            {/* <button
-              onClick={onClose}
-              className="absolute top-4 right-4 text-neutral-400 hover:text-white"
-            >
-              <X size={20} />
-            </button> */}
-
             <h2 className="text-xl font-bold mb-4 text-center">Login</h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">

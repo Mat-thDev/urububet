@@ -9,9 +9,8 @@ import { Minus, Plus } from "lucide-react";
 
 const RocketGame = () => {
   const { user, addCredits, removeCredits, updateWinGameStats, updateLossGameStats } = useUserData();
-  if (!user) return null;
 
-  const [bet, setBet] = useState(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 10);
+  const [bet, setBet] = useState(10); // default
   const [multiplier, setMultiplier] = useState(1);
   const [gameStarted, setGameStarted] = useState(false);
   const [exploded, setExploded] = useState(false);
@@ -21,33 +20,40 @@ const RocketGame = () => {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const explosionPoint = useRef<number>(1);
 
+  useEffect(() => {
+    if (user) {
+      setBet(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 10);
+    }
+  }, [user]);
+
   const changeBet = useCallback(
     (value: number) => {
+      if (!user) return;
       const newValue = Math.min(
         user.creditsAvaliable,
         Math.max(0.25, Number.isNaN(value) ? 0.25 : value)
       );
       setBet(Math.round(newValue * 100) / 100);
     },
-    [user.creditsAvaliable]
+    [user]
   );
 
   const startGame = () => {
+    if (!user) return;
     if (user.creditsAvaliable < bet || bet === 0) {
       setMessage("💸 Saldo insuficiente!");
       return;
     }
 
     removeCredits(bet);
-    updateLossGameStats("RocketGame", bet)
+    updateLossGameStats("RocketGame", bet);
     setMessage("");
     setGameStarted(true);
     setMultiplier(0.3);
     setExploded(false);
     setCashedOut(false);
 
-
-    const n = (Math.random() * ((Math.random()) * 10) + 1).toFixed(2) as unknown as number;
+    const n = (Math.random() * (Math.random() * 10) + 1).toFixed(2) as unknown as number;
     explosionPoint.current = n;
 
     intervalRef.current = setInterval(() => {
@@ -65,15 +71,19 @@ const RocketGame = () => {
   };
 
   const cashOut = () => {
-    if (!gameStarted || cashedOut || exploded) return;
+    if (!user || !gameStarted || cashedOut || exploded) return;
 
     clearInterval(intervalRef.current!);
     const winAmount = bet * multiplier;
     addCredits(winAmount);
     setCashedOut(true);
     setGameStarted(false);
-    setMessage(`🚀 Você sacou em ${multiplier.toFixed(2)}x e ganhou R$ ${winAmount.toFixed(2)}! Você poderia ter ganho R$ ${(bet * explosionPoint.current).toFixed(2)}`);
-    updateWinGameStats("RocketGame", winAmount)
+    setMessage(
+      `🚀 Você sacou em ${multiplier.toFixed(2)}x e ganhou R$ ${winAmount.toFixed(
+        2
+      )}! Você poderia ter ganho R$ ${(bet * explosionPoint.current).toFixed(2)}`
+    );
+    updateWinGameStats("RocketGame", winAmount);
   };
 
   useEffect(() => {
@@ -81,6 +91,16 @@ const RocketGame = () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
   }, []);
+
+  if (!user) {
+    return (
+      <GeneralContainer customStyle="w-full h-full flex items-center justify-center">
+        <div className="text-center text-lg font-bold text-red-500">
+          ⚠️ Você precisa estar logado para jogar.
+        </div>
+      </GeneralContainer>
+    );
+  }
 
   return (
     <GeneralContainer customStyle="w-full h-full flex items-center justify-center p-4 sm:p-6">

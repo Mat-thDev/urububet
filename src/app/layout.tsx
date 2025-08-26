@@ -3,8 +3,6 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import LoginModal from "@/components/Modals/LoginModal";
-import { UserData } from "@/types";
 import Providers from "./providers";
 
 const geistSans = Geist({
@@ -33,7 +31,6 @@ export default function RootLayout({
         <Providers>
           <Header />
 
-          {/* Conteúdo principal centralizado */}
           <main className="flex-1 container mx-auto px-4 py-8  w-full">
             {children}
           </main>

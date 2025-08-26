@@ -3,14 +3,12 @@
 import { useCurrency } from "@/hooks/useCurrency";
 import { useUserData } from "@/hooks/useUserData";
 import { openLoginModal } from "@/storage/atom";
-import { useAtom } from "jotai";
+import {  useSetAtom } from "jotai";
 import {
-  Coins,
   UserCircle,
   Menu,
   X,
   Banknote,
-  GitGraph,
   TrendingUp,
 } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +16,7 @@ import { useState } from "react";
 
 const Header = () => {
   const { formatCurrency } = useCurrency();
-  const [openLogin, setOpenLogin] = useAtom(openLoginModal);
+  const  setOpenLogin = useSetAtom(openLoginModal);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user } = useUserData();
 

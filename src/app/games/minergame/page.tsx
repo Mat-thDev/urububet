@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUserData } from "@/hooks/useUserData";
 import GeneralContainer from "@/components/General/GeneralContainer";
@@ -23,14 +23,30 @@ type Cell = {
 
 const MinerGame = () => {
   const { user, addCredits, removeCredits, updateWinGameStats, updateLossGameStats } = useUserData();
-  if (!user) return null;
 
   const [grid, setGrid] = useState<Cell[]>([]);
   const [gameStarted, setGameStarted] = useState(false);
-  const [cost, setCost] = useState(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 10);
+  const [cost, setCost] = useState(10);
   const [multiplier, setMultiplier] = useState(1);
   const [message, setMessage] = useState("");
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">("medium");
+
+  useEffect(() => {
+    if (user) {
+      setCost(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 10);
+    }
+  }, [user]);
+
+  if (!user) {
+    return (
+      <GeneralContainer customStyle="w-full h-full flex items-center justify-center">
+        <div className="text-center text-lg font-bold text-red-500">
+          ⚠️ Você precisa estar logado para jogar.
+        </div>
+      </GeneralContainer>
+    );
+  }
+
 
   const generateGrid = useCallback((): Cell[] => {
     const { bombs, diamonds } = difficulties[difficulty];

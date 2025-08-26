@@ -1,11 +1,10 @@
 "use client"
 
 import GeneralContainer from "@/components/General/GeneralContainer";
-import { Coins, Dice3, Play, Shuffle, Trophy, Gift, User, Home, Bomb, Rocket } from "lucide-react";
+import { Shuffle, Bomb, Rocket } from "lucide-react";
 import { motion, AnimatePresence, Variants } from "framer-motion";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { hasClaimedFirstBonus } from "@/storage/atom";
-import Link from "next/link";
 import { useUserData } from "@/hooks/useUserData";
 import GameCard from "@/components/Game/GameCard";
 
@@ -29,8 +28,7 @@ const buttonVariants = {
 };
 
 const HomePage = () => {
-  const { isLoggedIn, user, addCredits } = useUserData();
-  const creditsAvaliable = user?.creditsAvaliable;
+  const { addCredits } = useUserData();
   const [claimed, setClaimed] = useAtom(hasClaimedFirstBonus);
 
   const jogos = [
@@ -99,9 +97,8 @@ const HomePage = () => {
             </motion.p>
             <motion.a
               href="#resgatar-bonus"
-              className={`mt-4 inline-block bg-accent text-center text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 ${
-                claimed ? "opacity-50 cursor-not-allowed" : "hover:bg-accent-dark"
-              }`}
+              className={`mt-4 inline-block bg-accent text-center text-white font-semibold px-6 py-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 ${claimed ? "opacity-50 cursor-not-allowed" : "hover:bg-accent-dark"
+                }`}
               aria-label="Resgatar bônus de boas-vindas"
               onClick={redeemBonus}
               variants={buttonVariants}
@@ -112,7 +109,6 @@ const HomePage = () => {
             </motion.a>
           </div>
         </div>
-        {/* Elemento decorativo com animação */}
         <motion.div
           className="absolute -top-4 -right-4 w-16 h-16 bg-accent rounded-full opacity-20"
           animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.4, 0.2] }}
@@ -120,17 +116,16 @@ const HomePage = () => {
         />
       </motion.div>
 
-      {/* Seção de Jogos */}
       <section className="mt-8 lg:mt-12" aria-label="Jogos mais jogados">
         <motion.h1
-          className="text-xl sm:text-2xl font-bold text-accent mb-6"
+          className="text-xl sm:text-2xl font-bold text-center lg:text-left text-accent mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
           Jogos mais jogados
         </motion.h1>
-        <div className="w-full flex items-center justify-center">
+        <div className="w-full flex items-center justify-center lg:justify-start">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             <AnimatePresence>
               {jogos.map((jogo, i) => (
