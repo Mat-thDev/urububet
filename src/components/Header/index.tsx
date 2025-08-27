@@ -104,21 +104,19 @@ const Header = () => {
           <div className="flex flex-col items-center gap-4 py-4">
             <NavLink href="/user" onClick={toggleMenu}>
             <div className="flex items-center gap-2">
-             <TrendingUp className="h-5 w-5" />
               Estatísticas
             </div>
             </NavLink>
             <NavLink href="/depositar" onClick={toggleMenu}>
               <div className="flex items-center gap-2">
-                <Banknote className="h-5 w-5" />
                 Depositar
               </div>
             </NavLink>
             {user ? (
               <div className="flex flex-col items-center gap-2">
-                <span className="font-semibold text-accent">{user.name}</span>
                 <span className="flex items-center gap-2 text-sm font-medium text-foreground">
-                  <Banknote className="h-5 w-5 text-accent" />
+                  <span className="font-semibold text-accent">{user.name}</span>
+                  <span>•</span>
                   {formatCurrency(creditsRemaining)}
                 </span>
               </div>

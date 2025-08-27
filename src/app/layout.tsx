@@ -31,8 +31,10 @@ export default function RootLayout({
         <Providers>
           <Header />
 
-          <main className="flex-1 container mx-auto px-4 py-8 w-full h-screen">
-            {children}
+          <main className="flex-1 flex flex-col justify-center items-center px-4 py-8 w-full">
+            <div className="w-full max-w-5xl">
+              {children}
+            </div>
           </main>
 
           <Footer />

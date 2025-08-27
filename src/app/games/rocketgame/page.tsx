@@ -21,8 +21,8 @@ const RocketGame = () => {
   const explosionPoint = useRef<number>(1);
 
   useEffect(() => {
-    if (user) {
-      setBet(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 0);
+    if (user && !gameStarted) {
+      setBet(user.creditsAvaliable > 100 ? 100 : 0);
     }
   }, [user]);
 
@@ -103,7 +103,7 @@ const RocketGame = () => {
   }
 
   return (
-    <GeneralContainer customStyle="w-full h-full flex items-center justify-center p-4 sm:p-6">
+    <GeneralContainer customStyle="w-full h-screen flex items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-2xl p-6 sm:p-8 bg-surface rounded-2xl shadow-xl border-2 border-primary flex flex-col gap-6">
         <GameHeader credits={user.creditsAvaliable} gameName="🚀 Rocket Game" />
 

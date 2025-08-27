@@ -18,6 +18,7 @@ const DepositPage = () => {
   const { addCredits } = useUserData();
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState<"pix" | "boleto" | "card" | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const quickValues = [10, 25, 50, 100, 200, 500];
 
@@ -27,6 +28,16 @@ const DepositPage = () => {
     if (value === "" || (numValue >= 0.25 && !isNaN(numValue))) {
       setAmount(value);
     }
+  };
+
+  const paymentComproved = (value: number) => {
+    addCredits(value);
+    setAmount("");
+    setMethod(null);
+    setSuccessMessage(`Pagamento concluído! R$ ${value.toFixed(2)} depositados.`);
+
+    // Remove a mensagem após 3 segundos
+    setTimeout(() => setSuccessMessage(null), 3000);
   };
 
   return (
@@ -76,8 +87,8 @@ const DepositPage = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className={`flex-1 py-2 px-4 rounded-lg border text-sm font-medium transition-colors ${amount === value.toString()
-                        ? "border-accent bg-accent/20 text-accent"
-                        : "border-accent/20 hover:bg-white/10"
+                      ? "border-accent bg-accent/20 text-accent"
+                      : "border-accent/20 hover:bg-white/10"
                       }`}
                     aria-label={`Selecionar R$ ${value}`}
                   >
@@ -136,12 +147,27 @@ const DepositPage = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={!amount || !method}
-              onClick={() => addCredits(parseFloat(amount))}
+              onClick={() => paymentComproved(parseFloat(amount))}
               className="w-full py-4 text-lg font-bold bg-gradient-to-r from-accent to-primary rounded-full hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg"
               aria-label="Confirmar depósito"
             >
               Depositar Agora
             </motion.button>
+
+            {/* Mensagem de sucesso */}
+            <AnimatePresence>
+              {successMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-4 p-4 bg-accent text-secundary rounded-lg text-center font-bold"
+                >
+                  {successMessage}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </CardContent>
         </Card>
       </motion.div>

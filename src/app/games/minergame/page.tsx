@@ -10,9 +10,9 @@ const GRID_ROWS = 4;
 const GRID_COLS = 5;
 
 const difficulties = {
-  easy: { bombs: 5, diamonds: 15, diamondMultiplier: 1 },
-  medium: { bombs: 8, diamonds: 12, diamondMultiplier: 1.55 },
-  hard: { bombs: 12, diamonds: 8, diamondMultiplier: 2.25 },
+  easy: { bombs: 5, diamonds: 15, diamondMultiplier: .25 },
+  medium: { bombs: 8, diamonds: 12, diamondMultiplier: 1.25 },
+  hard: { bombs: 12, diamonds: 8, diamondMultiplier: 2.55 },
 };
 
 type Cell = {
@@ -32,8 +32,8 @@ const MinerGame = () => {
   const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard">("medium");
 
   useEffect(() => {
-    if (user) {
-      setCost(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 0);
+    if (user && !gameStarted) {
+      setCost(user.creditsAvaliable > 100 ? 100 : 0);
     }
   }, [user]);
 
@@ -100,8 +100,8 @@ const MinerGame = () => {
       setMessage("💥 Bomba! Você perdeu tudo.");
       setGameStarted(false);
     } else {
-      setMultiplier((prev) => prev * difficulties[difficulty].diamondMultiplier);
-      setMessage(`💎 Multiplicador: ${(multiplier * difficulties[difficulty].diamondMultiplier).toFixed(2)}x`);
+      setMultiplier((prev) => prev + difficulties[difficulty].diamondMultiplier);
+      setMessage(`💎 Multiplicador: ${(multiplier + difficulties[difficulty].diamondMultiplier).toFixed(2)}x`);
     }
   };
 
@@ -115,23 +115,18 @@ const MinerGame = () => {
   };
 
   return (
-    <GeneralContainer customStyle="w-full flex items-center justify-center p-4">
+    <GeneralContainer customStyle="w-full h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-5xl p-6 bg-surface rounded-2xl shadow-2xl border-2 border-primary flex flex-col gap-6">
         <GameHeader credits={user.creditsAvaliable} gameName="💎 Miner" />
 
-        <AnimatePresence>
-          {message && (
-            <motion.div
-              key={message}
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              className="bg-gradient-to-r from-accent/30 to-primary/30 p-3 rounded-lg text-center font-bold text-lg"
-            >
-              {message}
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {message ? (
+          <div
+            key={message}
+            className="bg-gradient-to-r from-accent/30 to-primary/30 p-3 rounded-lg text-center font-bold text-lg"
+          >
+            {message}
+          </div>
+        ) : (<div />)}
 
         {gameStarted && (
           <motion.div
@@ -184,15 +179,15 @@ const MinerGame = () => {
               value={cost.toFixed(2)}
               onChange={(e) => setCost(parseFloat(e.target.value))}
               disabled={gameStarted}
-              min={1}
-              step={1}
+              min={.25}
+              step={.25}
               className="px-4 py-2 rounded-lg bg-gray-900 border border-gray-700 w-28 text-center font-bold"
             />
           </div>
 
           {!gameStarted ? (
             <button
-              disabled={gameStarted || cost >= user.creditsAvaliable || cost === 0}
+              disabled={gameStarted || cost > user.creditsAvaliable || cost === 0}
               onClick={startGame}
               className="w-full py-3 bg-gradient-to-r from-accent to-primary rounded-full font-bold text-lg hover:brightness-110"
             >

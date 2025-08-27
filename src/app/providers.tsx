@@ -10,7 +10,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
   const [modalOpen, setModalOpen] = useAtom(openLoginModal);
 
   return (
-    <div>
+    <div className="w-full min-h-screen">
        <LoginModal isOpen={modalOpen} onClose={() => { setModalOpen(false) }}  />
       {children}
     </div>

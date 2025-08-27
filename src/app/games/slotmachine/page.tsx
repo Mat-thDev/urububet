@@ -48,12 +48,10 @@ const SlotMachine = () => {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    if (user) {
-      setCost(user.creditsAvaliable > 100 ? (user.creditsAvaliable / 100 * 10) : 0);
+    if (user && !gameStarted) {
+      setCost(user.creditsAvaliable > 100 ? 100 : 0);
     }
   }, [user]);
-
-  const multiplier = useMemo(() => Math.max(1, cost / 100), [cost]);
 
   const changeCost = useCallback(
     (value: number) => {
@@ -160,7 +158,7 @@ const SlotMachine = () => {
   };
 
   return (
-    <GeneralContainer customStyle="w-full h-full flex items-center justify-center p-4 sm:p-6">
+    <GeneralContainer customStyle="w-full h-screen flex items-center justify-center p-4 sm:p-6">
       <div className="w-full max-w-3xl sm:max-w-4xl p-6 sm:p-8 bg-surface rounded-2xl shadow-xl border-2 border-primary flex flex-col gap-6">
         <GameHeader credits={user.creditsAvaliable} gameName="🎰 Caça-Níquel" />
 
